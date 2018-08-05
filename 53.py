@@ -180,9 +180,39 @@ def foo(i):
     hits_with_dz = preprocess_hits(hits, 0.055*i)
 
     result = model.Hough_clustering(hits_with_dz,coef=c,epsilon=0.0048,min_samples=min_samples_in_cluster,
-                       n_loop=1,verbose=True)
+                       n_loop=300,verbose=True)
     
-    np.save('predicts/53/{}'.format(i), result)
+    
+    
+    second = []
+    for k in range(10):
+
+        np.random.shuffle(result)
+
+        #result = res0
+        labels = range(result.shape[1])
+
+        for k in [0]:
+            for i in range(len(result[:])):
+                labels = merge(labels, result[i], k)
+
+            submission = create_one_event_submission(0, hits['hit_id'].values, labels)
+            print(score_event(truth, submission))
+
+        second += [labels]
+        
+    result = np.array(second)
+    labels = range(result.shape[1])
+
+    for k in [0]:
+        for i in range(len(result[:])):
+            labels = merge(labels, result[i], k)
+
+        submission = create_one_event_submission(0, hits['hit_id'].values, labels)
+        print(score_event(truth, submission))
+    
+    
+    np.save('predicts/53/{}'.format(i), labels)
     return None
 
 
